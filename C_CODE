@@ -1,0 +1,24 @@
+//TempTask.c
+#include "TempSensor.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
+extern QueueHandle_t xTempQueue;
+
+void vTempTask(void *pvParameters)
+{
+    float temperature;
+
+    for(;;)
+    {
+        // Read the temperature from the sensor
+        temperature = TempSensor_Read();
+
+        // Send the temperature to the queue
+        xQueueSend(xTempQueue, &temperature, portMAX_DELAY);
+
+        // Delay for 1 second
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
