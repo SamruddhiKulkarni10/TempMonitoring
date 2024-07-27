@@ -1,0 +1,23 @@
+
+#include "LCD.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
+extern QueueHandle_t xTempQueue;
+
+void vLCDTask(void *pvParameters)
+{
+    float temperature;
+
+    for(;;)
+    {
+        // Receive the temperature from the queue
+        if(xQueueReceive(xTempQueue, &temperature, portMAX_DELAY) == pdPASS)
+        {
+            // Display the temperature on the LCD
+            LCD_Clear();
+            LCD_Print("Temp: %.2f C", temperature);
+        }
+    }
+}
